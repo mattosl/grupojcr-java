@@ -17,7 +17,7 @@ public class FluigBusiness {
 	 * 
 	 * Método responsável por obter stub do cliente WS - ECMWorkflowEngine
 	 *
-	 * @since 18 de fev de 2018 14:26:23 (Projeto)
+	 * @since 19 de fev de 2018 14:26:23 (Projeto)
 	 * @author Leonan Mattos - <leonan.mattos@sigma.com.br>
 	 * @since 18 de fev de 2018 14:26:23 (Implementação)
 	 * @author Leonan Mattos - <leonan.mattos@sigma.com.br>
