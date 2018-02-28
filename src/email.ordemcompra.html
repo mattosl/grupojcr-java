@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Grupo JCR</title>
+<style type="text/css">
+<!--
+.style1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+}
+
+.body, td {
+	font-family: tahoma;
+	font-size: 12px;
+	font-weight: normal;
+}
+-->
+</style>
+</head>
+<body>
+	<div>
+		<table id="container"
+			style="width: 100%; margin: 0pt; padding: 0pt; background-color: #ffffff;">
+			<!-- Start of main container -->
+			<tbody>
+				<tr>
+					<td>
+						<div>
+							<table style="width: 620px;" align="center">
+								<tbody>
+									<tr>
+										<td width="20%" style="padding-bottom: 10px;"><img
+											src="https://media-exp2.licdn.com/mpr/mpr/shrink_200_200/AAEAAQAAAAAAAAloAAAAJDg0YWI0OGUyLWNjMWMtNDgyOC1hNjgzLTcxNTNhOWQ4Yjc2ZQ.png"
+											alt="Grupo JCR" width="100" height="100" /></td>
+										<td><span style="font-size: 32px; font-weight: bold;">Grupo
+												JCR<br />
+										</span>
+											<hr /> <span style="font-size: 14px; font-weight: bold;">Administra&ccedil;&atilde;o
+												e Participa&ccedil;&otilde;es Ltda</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<table
+							style="border-collapse: collapse; font-size: 12px; line-height: 15pt; width: 620px;"
+							align="center">
+							<tbody style="border: 1px solid; border-color: #cdcdcd;">
+								<tr>
+									<td
+										style="padding: 15px 20px 15px 20px; font-size: 12px; background-color: #009900;">
+										<table>
+											<tbody>
+												<tr>
+													<td style="padding: 0 20px 0 0; color:#FFF; font-size:30px;">&#10004;</td>
+													<td><label
+														style="color: #ffffff !important;"><font color="#FFFFFF" size="4">Ordem
+															de Compra Aprovada</font></label></td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h2
+											style="color: #39434d; font-size: 12px; padding-left: 10px;">
+											<span><strong><i>${nome},</i></strong></span><br>Segue
+											as informa&ccedil;&otilde;es da nova Ordem de Compra
+											aprovada:<br>
+										</h2>
+										<h3
+											style="color: #39434d; font-size: 12px; padding-left: 10px; border-bottom: 1px solid #CCCCCC">IDENTIFICA&Ccedil;&Atilde;O</h3>
+										<table>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Empresa:
+												</td>
+												<td style="font-size: 10px; padding-left: 10px;">${empresa}</td>
+											</tr>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Data
+													Emiss&atilde;o:</td>
+												<td style="font-size: 10px; padding-left: 10px;">${dtEmissao}</td>
+											</tr>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Identificador
+													RM:</td>
+												<td style="font-size: 10px; padding-left: 10px;">${identificadorRM}</td>
+											</tr>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Fornecedor:
+												</td>
+												<td style="font-size: 10px; padding-left: 10px;">${fornecedor}</td>
+											</tr>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Centro
+													de Custo:</td>
+												<td style="font-size: 10px; padding-left: 10px;">${centroCusto}</td>
+											</tr>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Valor
+													Total:</td>
+												<td style="font-size: 10px; padding-left: 10px;">${valorTotal}</td>
+											</tr>
+										</table>
+										<h3
+											style="color: #39434d; font-size: 12px; padding-left: 10px; border-bottom: 1px solid #CCCCCC">APROVADORES</h3>
+										<table>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Primeiro
+													Aprovador:</td>
+												<td style="font-size: 10px; padding-left: 10px;">${nomePrimeiroAprovador}</td>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Data
+													de Aprova&ccedil;&atilde;o:</td>
+												<td style="font-size: 10px; padding-left: 10px;">${dtPrimeiraAprovacao}
+												</td>
+											</tr>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Observa&ccedil;&atilde;o:
+												</td>
+												<td style="font-size: 10px; padding-left: 10px;">${primeiraObservacao}</td>
+											</tr>
+										</table>
+										<hr />
+										<table>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Segundo
+													Aprovador:</td>
+												<td style="font-size: 10px; padding-left: 10px;">${nomeSegundoAprovador}</td>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Data
+													de Aprova&ccedil;&atilde;o:</td>
+												<td style="font-size: 10px; padding-left: 10px;">${dtSegundaAprovacao}
+												</td>
+											</tr>
+											<tr>
+												<td
+													style="font-weight: bold; font-size: 12px; padding-left: 25px; text-align: right;">Observa&ccedil;&atilde;o:
+												</td>
+												<td style="font-size: 10px; padding-left: 10px;">${segundaObservacao}</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table> <!-- End of letter container  --> <!--Start of company details and unsubscribe link-->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
