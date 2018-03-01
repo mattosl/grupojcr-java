@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -28,8 +29,18 @@ import br.com.grupojcr.rmws.util.Util;
 
 @Stateless
 public class RMDAO extends GenericDAO {
+	
 	protected static Logger LOG = Logger.getLogger(RMDAO.class);
 
+	/**
+	 * Método responsável por obter movimento
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param codMovimento : Integer
+	 * @param codColigada : Integer
+	 * @return MovimentoDTO
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public MovimentoDTO obterMovimento(Integer codMovimento, Integer codColigada) {
 		Connection conn = null;
@@ -117,6 +128,15 @@ public class RMDAO extends GenericDAO {
 		return null;
 	}
 
+	/**
+	 * Método responsável por listar itens do movimento
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param codMovimento : Integer
+	 * @param codColigada : Integer
+	 * @return List<ItemDTO>
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<ItemDTO> listarItensMovimento(Integer codMovimento, Integer codColigada) {
 		List<ItemDTO> listaDTO = new ArrayList<ItemDTO>();
@@ -189,6 +209,15 @@ public class RMDAO extends GenericDAO {
 		return listaDTO;
 	}
 
+	/**
+	 * Método responsável por listar itens do contrato
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param codContrato : Integer
+	 * @param codColigada : Integer
+	 * @return List<ItemDTO>
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<ItemDTO> listarItensContrato(Integer codContrato, Integer codColigada) {
 		List<ItemDTO> listaDTO = new ArrayList<ItemDTO>();
@@ -260,7 +289,16 @@ public class RMDAO extends GenericDAO {
 		}
 		return listaDTO;
 	}
-
+	
+	/**
+	 * Método responsável por obter lotação
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param codCentroCusto : String
+	 * @param codColigada : Integer
+	 * @return String
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public String obterLotacao(Integer codColigada, String codCentroCusto) {
 		Connection conn = null;
@@ -308,6 +346,14 @@ public class RMDAO extends GenericDAO {
 		return null;
 	}
 
+	/**
+	 * Método responsável por obter primeiros aprovadores
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param lotacao : String
+	 * @return List<AprovadorDTO>
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<AprovadorDTO> obterPrimeiroAprovadores(String lotacao) {
 		List<AprovadorDTO> listaDTO = new ArrayList<AprovadorDTO>();
@@ -365,6 +411,14 @@ public class RMDAO extends GenericDAO {
 		return listaDTO;
 	}
 
+	/**
+	 * Método responsável por obter segundo aprovadores
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param lotacao : String
+	 * @return List<AprovadorDTO>
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<AprovadorDTO> obterSegundoAprovadores(String lotacao) {
 		List<AprovadorDTO> listaDTO = new ArrayList<AprovadorDTO>();
@@ -422,11 +476,30 @@ public class RMDAO extends GenericDAO {
 		return listaDTO;
 	}
 
+	/**
+	 * Método responsável por incluir monitor de aprovação
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param idColigada : Integer
+	 * @param idMov : Integer
+	 * @param idTipoMovimento : String
+	 * @param usuarioRequisitante : String
+	 * @param situacao : String
+	 * @param usuarioAprovacao : String
+	 * @param usuarioAprovacaoAlternativo : String
+	 * @param dtAprovacao : Date
+	 * @param quemAprova : String
+	 * @param usuarioCriacao : String
+	 * @param dtCriacao : Date
+	 * @param usuarioAlteracao : String
+	 * @param dtAlteracao : Date
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void incluirMonitorAprovacao(Integer idColigada, Integer idMov, String idTipoMovimento,
 			String usuarioRequisitante, String situacao, String usuarioAprovacao, String usuarioAprovacaoAlternativo,
-			java.util.Date dtAprovacao, String quemAprova, String usuarioCriacao, java.util.Date dtCriacao,
-			String usuarioAlteracao, java.util.Date dtAlteracao) {
+			Date dtAprovacao, String quemAprova, String usuarioCriacao, Date dtCriacao,
+			String usuarioAlteracao, Date dtAlteracao) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 
@@ -492,6 +565,15 @@ public class RMDAO extends GenericDAO {
 		}
 	}
 
+	/**
+	 * Método responsável por incluir aprovação no RM
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param idColigada : Integer
+	 * @param idMov : Integer
+	 * @param usrAprovacao : String
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void incluirAprovacaoRM(Integer idColigada, Integer idMov, String usrAprovacao) {
 		Connection conn = null;
@@ -541,6 +623,15 @@ public class RMDAO extends GenericDAO {
 		}
 	}
 
+	/**
+	 * Método responsável por obter ultima aprovação
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param idColigada : Integer
+	 * @param idMov : Integer
+	 * @return MonitorAprovacaoDTO
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public MonitorAprovacaoDTO obterUltimaAprovacao(Integer idColigada, Integer idMov) {
 		Connection conn = null;
@@ -597,6 +688,15 @@ public class RMDAO extends GenericDAO {
 		return null;
 	}
 
+	/**
+	 * Método responsável por obter primeiro aprovador do monitor
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param idColigada : Integer
+	 * @param idMov : Integer
+	 * @return MonitorAprovacaoDTO
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public MonitorAprovacaoDTO obterPrimeiroAprovadorMonitor(Integer idColigada, Integer idMov) {
 		Connection conn = null;
@@ -651,6 +751,15 @@ public class RMDAO extends GenericDAO {
 		return null;
 	}
 
+	/**
+	 * Método responsável por obter segundo aprovador do monitor
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param idColigada : Integer
+	 * @param idMov : Integer
+	 * @return MonitorAprovacaoDTO
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public MonitorAprovacaoDTO obterSegundoAprovadorMonitor(Integer idColigada, Integer idMov) {
 		Connection conn = null;
@@ -704,6 +813,14 @@ public class RMDAO extends GenericDAO {
 		return null;
 	}
 
+	/**
+	 * Método responsável por obter nome aprovador
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param login : String
+	 * @return String
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public String obterNomeAprovador(String login) {
 		Connection conn = null;
@@ -750,9 +867,18 @@ public class RMDAO extends GenericDAO {
 		return null;
 	}
 
+	/**
+	 * Método responsável por listar aprovação por período
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @param idColigada : Integer
+	 * @param dtInicio : Date
+	 * @param dtFim : Date
+	 * @return List<MovimentoDTO>
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<MovimentoDTO> listarAprovacaoPorPeriodo(Integer idColigada, java.util.Date dtInicio,
-			java.util.Date dtFim) {
+	public List<MovimentoDTO> listarAprovacaoPorPeriodo(Integer idColigada, Date dtInicio, Date dtFim) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		List<MovimentoDTO> movimentos = new ArrayList<MovimentoDTO>();
@@ -855,7 +981,7 @@ public class RMDAO extends GenericDAO {
 				dto.setUsrSolicitante(set.getString("USRSOLICITANTE"));
 				dto.setStatus(set.getString("STATUS"));
 				dto.setSituacaoMonitor(set.getString("SITUACAO_APROVACAO"));
-				java.util.Date dtUltimaAprovacao = set.getDate("DATA_ULTIMA_APROVACAO");
+				Date dtUltimaAprovacao = set.getDate("DATA_ULTIMA_APROVACAO");
 				if (Util.isNotNull(dtUltimaAprovacao)) {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					dto.setDtUltimaAprovacao(sdf.format(dtUltimaAprovacao));
@@ -895,6 +1021,13 @@ public class RMDAO extends GenericDAO {
 		return movimentos;
 	}
 
+	/**
+	 * Método responsável por listar coligadas
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 01/02/2018
+	 * @return List<ColigadaDTO>
+	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<ColigadaDTO> listarColigadas() {
 		Connection conn = null;
