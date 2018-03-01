@@ -61,6 +61,4 @@ public class AprovadorDTO {
 				+ ", valorFinalContrato=" + valorFinalContrato + ", idColigada=" + idColigada + ", lotacao=" + lotacao
 				+ "]";
 	}
-	
-
 }

@@ -1,5 +1,6 @@
 package br.com.grupojcr.rmws.business;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 import br.com.grupojcr.rmws.dao.RMDAO;
 import br.com.grupojcr.rmws.dto.AprovadorDTO;
 import br.com.grupojcr.rmws.dto.MovimentoDTO;
+import br.com.grupojcr.rmws.util.Util;
 
 @Stateless
 public class RMBusiness {
@@ -42,11 +44,27 @@ public class RMBusiness {
 				Boolean possuiVinculo = Boolean.FALSE;
 				List<AprovadorDTO> aprovadores = rmDAO.listarAprovadores(dto.getLotacao());
 	
-				for (AprovadorDTO primeiro : aprovadores) {
-					if (primeiro.getUsuarioAprovacao().equals(usuario)) {
-						possuiVinculo = Boolean.TRUE;
+				Double valorCompra = Util.removerFomatacaoMoeda(dto.getValorTotal());
+				
+				for (AprovadorDTO aprv : aprovadores) {
+					if(aprv.getUsuarioAprovacao().equals(usuario)) {
+						if(dto.getIdTipoMovimento().equals("CONTRATO")) {
+							if(aprv.getValorInicialContrato().compareTo(new BigDecimal(valorCompra)) == 0 || aprv.getValorInicialContrato().compareTo(new BigDecimal(valorCompra)) == -1) {
+								if(aprv.getValorFinalContrato().compareTo(new BigDecimal(valorCompra)) == 0 || aprv.getValorFinalContrato().compareTo(new BigDecimal(valorCompra)) == 1) {
+									possuiVinculo = Boolean.TRUE;
+								}
+							}
+						} else {
+							if(aprv.getValorInicialMovimento().compareTo(new BigDecimal(valorCompra)) == 0 || aprv.getValorInicialMovimento().compareTo(new BigDecimal(valorCompra)) == -1) {
+								if(aprv.getValorFinalMovimento().compareTo(new BigDecimal(valorCompra)) == 0 || aprv.getValorFinalMovimento().compareTo(new BigDecimal(valorCompra)) == 1) {
+									possuiVinculo = Boolean.TRUE;
+								}
+							}
+						}
+						
 					}
 				}
+				
 				if (possuiVinculo) {
 					if(dto.getIdTipoMovimento().equals("CONTRATO")) {
 						dto.setListaItem(rmDAO.listarItensContrato(dto.getIdMov(), dto.getIdColigada()));
