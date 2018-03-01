@@ -26,6 +26,7 @@ public class MovimentoDTO {
 	private String dtSegundaAprovacao;
 	private String situacaoMonitor;
 	private String dtUltimaAprovacao;
+	private String lotacao;
 	private List<ItemDTO> listaItem;
 
 	public Integer getIdColigada() {
@@ -220,6 +221,14 @@ public class MovimentoDTO {
 
 	public void setDtUltimaAprovacao(String dtUltimaAprovacao) {
 		this.dtUltimaAprovacao = dtUltimaAprovacao;
+	}
+
+	public String getLotacao() {
+		return lotacao;
+	}
+
+	public void setLotacao(String lotacao) {
+		this.lotacao = lotacao;
 	}
 
 }

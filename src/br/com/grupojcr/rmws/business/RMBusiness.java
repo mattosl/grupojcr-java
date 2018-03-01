@@ -40,24 +40,23 @@ public class RMBusiness {
 			LOG.info("[listarMovimentos] Verificando movimentos que o usuário tem ligação...");
 			for (MovimentoDTO dto : movimentos) {
 				Boolean possuiVinculo = Boolean.FALSE;
-				String lotacao = rmDAO.obterLotacao(dto.getIdColigada(), dto.getIdCentroCusto());
-				List<AprovadorDTO> primeirosAprovadores = rmDAO.obterPrimeiroAprovadores(lotacao);
-				List<AprovadorDTO> segundosAprovadores = rmDAO.obterSegundoAprovadores(lotacao);
+				List<AprovadorDTO> aprovadores = rmDAO.listarAprovadores(dto.getLotacao());
 	
-				for (AprovadorDTO primeiro : primeirosAprovadores) {
+				for (AprovadorDTO primeiro : aprovadores) {
 					if (primeiro.getUsuarioAprovacao().equals(usuario)) {
 						possuiVinculo = Boolean.TRUE;
 					}
 				}
-				for (AprovadorDTO segundo : segundosAprovadores) {
-					if (segundo.getUsuarioAprovacao().equals(usuario)) {
-						possuiVinculo = Boolean.TRUE;
+				if (possuiVinculo) {
+					if(dto.getIdTipoMovimento().equals("CONTRATO")) {
+						dto.setListaItem(rmDAO.listarItensContrato(dto.getIdMov(), dto.getIdColigada()));
+					} else {
+						dto.setListaItem(rmDAO.listarItensMovimento(dto.getIdMov(), dto.getIdColigada()));
 					}
-				}
-				if (possuiVinculo.booleanValue()) {
 					retorno.add(dto);
 				}
 			}
+			
 			LOG.info("[listarMovimentos] Movimentos filtrados.");
 			return retorno;
 		} catch (Exception e) {
