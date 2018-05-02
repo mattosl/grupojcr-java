@@ -19,12 +19,15 @@ import javax.ejb.TransactionAttributeType;
 import org.apache.log4j.Logger;
 
 import br.com.grupojcr.rmws.dto.AprovadorDTO;
+import br.com.grupojcr.rmws.dto.CentroCustoDTO;
 import br.com.grupojcr.rmws.dto.ColigadaDTO;
 import br.com.grupojcr.rmws.dto.ItemDTO;
 import br.com.grupojcr.rmws.dto.MonitorAprovacaoDTO;
 import br.com.grupojcr.rmws.dto.MovimentoDTO;
+import br.com.grupojcr.rmws.dto.OrcamentoDTO;
 import br.com.grupojcr.rmws.util.TreatDate;
 import br.com.grupojcr.rmws.util.TreatNumber;
+import br.com.grupojcr.rmws.util.TreatString;
 import br.com.grupojcr.rmws.util.Util;
 
 @Stateless
@@ -968,7 +971,7 @@ public class RMDAO extends GenericDAO {
 	 * @return List<MovimentoDTO>
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<MovimentoDTO> listarAprovacaoPorPeriodo(Integer idColigada, Date dtInicio, Date dtFim) {
+	public List<MovimentoDTO> listarAprovacaoPorPeriodo(Integer idColigada, String centroCusto, Date dtInicio, Date dtFim) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		List<MovimentoDTO> movimentos = new ArrayList<MovimentoDTO>();
@@ -1014,6 +1017,9 @@ public class RMDAO extends GenericDAO {
 			if (Util.isNotNull(idColigada)) {
 				sb.append("AND TMOV.CODCOLIGADA = ? ");
 			}
+			if(TreatString.isNotBlank(centroCusto)) {
+				sb.append("AND CCUSTO.CODCCUSTO LIKE ? ");
+			}
 
 			sb.append("UNION ALL ")
 			.append("SELECT DISTINCT ")
@@ -1053,6 +1059,9 @@ public class RMDAO extends GenericDAO {
 			if (Util.isNotNull(idColigada)) {
 				sb.append("AND CNT.CODCOLIGADA = ? ");
 			}
+			if(TreatString.isNotBlank(centroCusto)) {
+				sb.append("AND CCUSTO.CODCCUSTO LIKE ? ");
+			}
 			sb.append("ORDER BY DT_EMISSAO DESC ");
 
 			ps = conn.prepareStatement(sb.toString());
@@ -1063,10 +1072,16 @@ public class RMDAO extends GenericDAO {
 			if (Util.isNotNull(idColigada)) {
 				ps.setInt(idx++, idColigada.intValue());
 			}
+			if(TreatString.isNotBlank(centroCusto)) {
+				ps.setString(idx++, centroCusto);
+			}
 			ps.setDate(idx++, new java.sql.Date(dtInicio.getTime()));
 			ps.setDate(idx++, new java.sql.Date(dtFim.getTime()));
 			if (Util.isNotNull(idColigada)) {
 				ps.setInt(idx++, idColigada.intValue());
+			}
+			if(TreatString.isNotBlank(centroCusto)) {
+				ps.setString(idx++, centroCusto);
 			}
 
 			ResultSet set = ps.executeQuery();
@@ -1180,5 +1195,117 @@ public class RMDAO extends GenericDAO {
 			}
 		}
 		return coligadas;
+	}
+	
+	/**
+	 * Método responsável por listar centro de custo
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 16/04/2018
+	 * @return List<CentroCustoDTO>
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public List<CentroCustoDTO> listarCentroCusto() {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		List<CentroCustoDTO> centrosCusto = new ArrayList<CentroCustoDTO>();
+
+		try {
+			conn = datasource.getConnection();
+
+			StringBuilder sb = new StringBuilder();
+			sb.append(
+					"SELECT CODCCUSTO, NOME FROM GCCUSTO WHERE CODCOLIGADA = 7 ORDER BY CODCCUSTO");
+
+			ps = conn.prepareStatement(sb.toString());
+
+			ResultSet set = ps.executeQuery();
+
+			while (set.next()) {
+				CentroCustoDTO dto = new CentroCustoDTO();
+				dto.setCodigoCentroCusto(set.getString("CODCCUSTO"));
+				dto.setNome(set.getString("NOME"));
+
+				centrosCusto.add(dto);
+			}
+		} catch (Exception e) {
+			LOG.error("Erro ao listar centro de custos");
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					ps = null;
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					conn = null;
+				}
+			}
+		}
+		return centrosCusto;
+	}
+
+	/**
+	 * Método responsável por listar orçamentos
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 16/04/2018
+	 * @return List<OrcamentoDTO>
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public List<OrcamentoDTO> listarOrcamento() {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		List<OrcamentoDTO> orcamentos = new ArrayList<OrcamentoDTO>();
+		
+		try {
+			conn = datasource.getConnection();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append(
+					"SELECT CODTBORCAMENTO, DESCRICAO FROM TTBORCAMENTO WHERE INATIVO = 0 ORDER BY DESCRICAO");
+			
+			ps = conn.prepareStatement(sb.toString());
+			
+			ResultSet set = ps.executeQuery();
+			
+			while (set.next()) {
+				OrcamentoDTO dto = new OrcamentoDTO();
+				dto.setCodigo(set.getString("CODTBORCAMENTO"));
+				dto.setDescricao(set.getString("DESCRICAO"));
+				
+				orcamentos.add(dto);
+			}
+		} catch (Exception e) {
+			LOG.error("Erro ao listar orçamento");
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					ps = null;
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					conn = null;
+				}
+			}
+		}
+		return orcamentos;
 	}
 }

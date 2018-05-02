@@ -20,10 +20,12 @@ import com.google.gson.Gson;
 
 import br.com.grupojcr.rmws.business.RMBusiness;
 import br.com.grupojcr.rmws.dao.RMDAO;
+import br.com.grupojcr.rmws.dto.CentroCustoDTO;
 import br.com.grupojcr.rmws.dto.ColigadaDTO;
 import br.com.grupojcr.rmws.dto.JsonSerialize;
 import br.com.grupojcr.rmws.dto.MonitorAprovacaoDTO;
 import br.com.grupojcr.rmws.dto.MovimentoDTO;
+import br.com.grupojcr.rmws.dto.OrcamentoDTO;
 import br.com.grupojcr.rmws.util.EnviaEmail;
 import br.com.grupojcr.rmws.util.TreatString;
 import br.com.grupojcr.rmws.util.Util;
@@ -167,7 +169,7 @@ public class AprovacaoWSRest {
 			Date dtInicio = formato.parse(jsonRelatorio.getPeriodoInicial());
 			Date dtFinal = formato.parse(jsonRelatorio.getPeriodoFinal());
 			LOG.info("[gerarRelatorioAprovacao] Listando movimentos...");
-			List<MovimentoDTO> listaMovimento = rmBusiness.listarMovimentos(jsonRelatorio.getUsuarioLogado(), dtInicio, dtFinal, jsonRelatorio.getIdColigada());
+			List<MovimentoDTO> listaMovimento = rmBusiness.listarMovimentos(jsonRelatorio.getUsuarioLogado(), dtInicio, dtFinal, jsonRelatorio.getIdColigada(), jsonRelatorio.getCentroCusto(), jsonRelatorio.getOrcamento());
 			return Response.status(200).entity(listaMovimento).build();
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
@@ -190,6 +192,48 @@ public class AprovacaoWSRest {
 			LOG.info("[listarColigadas] Listando coligadas...");
 			List<ColigadaDTO> listaColigada = rmDAO.listarColigadas();
 			return Response.status(200).entity(listaColigada).build();
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			return Response.status(500).entity(e).build();
+		}
+	}
+	
+	/**
+	 * Método do WS responsável por listar centros de custos
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 17/04/2018
+	 * @param data : String
+	 * @return Response
+	 */
+	@POST
+	@Path("/centroCusto")
+	public Response listarCentroCusto(String data) throws ParseException {
+		LOG.info("[listarCentroCusto] Método iniciado");
+		try {
+			LOG.info("[listarCentroCusto] Listando centro de custos...");
+			List<CentroCustoDTO> listaCentroCusto = rmDAO.listarCentroCusto();
+			return Response.status(200).entity(listaCentroCusto).build();
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			return Response.status(500).entity(e).build();
+		}
+	}
+
+	/**
+	 * Método do WS responsável por listar centros de custos
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 17/04/2018
+	 * @param data : String
+	 * @return Response
+	 */
+	@POST
+	@Path("/orcamento")
+	public Response listarOrcamento(String data) throws ParseException {
+		LOG.info("[listarOrcamento] Método iniciado");
+		try {
+			LOG.info("[listarOrcamento] Listando orçamentos...");
+			List<OrcamentoDTO> listaOrcamento = rmDAO.listarOrcamento();
+			return Response.status(200).entity(listaOrcamento).build();
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 			return Response.status(500).entity(e).build();

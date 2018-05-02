@@ -26,6 +26,10 @@ public class JsonSerialize {
 	private String periodoInicial;
 	@SerializedName("periodoFinal")
 	private String periodoFinal;
+	@SerializedName("centroCusto")
+	private String centroCusto;
+	@SerializedName("orcamento")
+	private String orcamento;
 	
 	public Integer getIdColigada() {
 		return idColigada;
@@ -92,5 +96,17 @@ public class JsonSerialize {
 	}
 	public void setPeriodoFinal(String periodoFinal) {
 		this.periodoFinal = periodoFinal;
+	}
+	public String getCentroCusto() {
+		return centroCusto;
+	}
+	public void setCentroCusto(String centroCusto) {
+		this.centroCusto = centroCusto;
+	}
+	public String getOrcamento() {
+		return orcamento;
+	}
+	public void setOrcamento(String orcamento) {
+		this.orcamento = orcamento;
 	}
 }

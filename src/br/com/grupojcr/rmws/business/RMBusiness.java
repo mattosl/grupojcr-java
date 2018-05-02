@@ -12,7 +12,9 @@ import org.apache.log4j.Logger;
 
 import br.com.grupojcr.rmws.dao.RMDAO;
 import br.com.grupojcr.rmws.dto.AprovadorDTO;
+import br.com.grupojcr.rmws.dto.ItemDTO;
 import br.com.grupojcr.rmws.dto.MovimentoDTO;
+import br.com.grupojcr.rmws.util.TreatString;
 import br.com.grupojcr.rmws.util.Util;
 
 @Stateless
@@ -33,10 +35,10 @@ public class RMBusiness {
 	 * @param idColigada : Integer
 	 * @return List<MovimentoDTO>
 	 */
-	public List<MovimentoDTO> listarMovimentos(String usuario, Date dtInicio, Date dtFim, Integer idColigada) {
+	public List<MovimentoDTO> listarMovimentos(String usuario, Date dtInicio, Date dtFim, Integer idColigada, String centroCusto, String naturezaOrcamentaria) {
 		try {
 			LOG.info("[listarMovimentos] Listando aprovações do período...");
-			List<MovimentoDTO> movimentos = rmDAO.listarAprovacaoPorPeriodo(idColigada, dtInicio, dtFim);
+			List<MovimentoDTO> movimentos = rmDAO.listarAprovacaoPorPeriodo(idColigada, centroCusto, dtInicio, dtFim);
 			List<MovimentoDTO> retorno = new ArrayList<MovimentoDTO>();
 	
 			LOG.info("[listarMovimentos] Verificando movimentos que o usuário tem ligação...");
@@ -71,7 +73,22 @@ public class RMBusiness {
 					} else {
 						dto.setListaItem(rmDAO.listarItensMovimento(dto.getIdMov(), dto.getIdColigada()));
 					}
-					retorno.add(dto);
+					
+					if(TreatString.isNotBlank(naturezaOrcamentaria)) {
+						Boolean possuiNatureza = Boolean.FALSE;
+						for(ItemDTO item : dto.getListaItem()) {
+							if(item.getIdNaturezaOrcamentaria().equals(naturezaOrcamentaria)) {
+								possuiNatureza = Boolean.TRUE;
+							}
+						}
+						
+						if(possuiNatureza) {
+							retorno.add(dto);
+						}
+						
+					} else {
+						retorno.add(dto);
+					}
 				}
 			}
 			
