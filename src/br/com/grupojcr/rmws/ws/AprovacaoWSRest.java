@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 
+import br.com.grupojcr.rmws.business.FluigBusiness;
 import br.com.grupojcr.rmws.business.RMBusiness;
 import br.com.grupojcr.rmws.dao.RMDAO;
 import br.com.grupojcr.rmws.dto.CentroCustoDTO;
@@ -26,6 +27,7 @@ import br.com.grupojcr.rmws.dto.JsonSerialize;
 import br.com.grupojcr.rmws.dto.MonitorAprovacaoDTO;
 import br.com.grupojcr.rmws.dto.MovimentoDTO;
 import br.com.grupojcr.rmws.dto.OrcamentoDTO;
+import br.com.grupojcr.rmws.dto.SolicitacaoAprovacaoDTO;
 import br.com.grupojcr.rmws.util.EnviaEmail;
 import br.com.grupojcr.rmws.util.TreatString;
 import br.com.grupojcr.rmws.util.Util;
@@ -45,6 +47,8 @@ public class AprovacaoWSRest {
 	private RMDAO rmDAO;
 	@EJB
 	private RMBusiness rmBusiness;
+	@EJB
+	private FluigBusiness fluigBusiness;
 
 	/**
 	 * Método do WS responsável por obter os dados do movimento
@@ -234,6 +238,27 @@ public class AprovacaoWSRest {
 			LOG.info("[listarOrcamento] Listando orçamentos...");
 			List<OrcamentoDTO> listaOrcamento = rmDAO.listarOrcamento();
 			return Response.status(200).entity(listaOrcamento).build();
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			return Response.status(500).entity(e).build();
+		}
+	}
+	
+	/**
+	 * Método do WS responsável por obter as solicitações
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 04/05/2018
+	 * @param data : String
+	 * @return Response
+	 */
+	@POST
+	@Path("/solicitacaoAprovacao")
+	public Response listarSolicitacaoAprovacao(String data) throws ParseException {
+		LOG.info("[listarSolicitacaoAprovacao] Método iniciado");
+		try {
+			JsonSerialize json = (JsonSerialize) new Gson().fromJson(data, JsonSerialize.class);
+			SolicitacaoAprovacaoDTO dto = fluigBusiness.listarSolicitacoesAprovacao(json.getUsuarioLogado());
+			return Response.status(200).entity(dto).build();
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 			return Response.status(500).entity(e).build();

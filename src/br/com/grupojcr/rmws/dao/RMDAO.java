@@ -21,10 +21,13 @@ import org.apache.log4j.Logger;
 import br.com.grupojcr.rmws.dto.AprovadorDTO;
 import br.com.grupojcr.rmws.dto.CentroCustoDTO;
 import br.com.grupojcr.rmws.dto.ColigadaDTO;
+import br.com.grupojcr.rmws.dto.AprovacaoContratoDTO;
+import br.com.grupojcr.rmws.dto.AprovacaoOrdemCompraDTO;
 import br.com.grupojcr.rmws.dto.ItemDTO;
 import br.com.grupojcr.rmws.dto.MonitorAprovacaoDTO;
 import br.com.grupojcr.rmws.dto.MovimentoDTO;
 import br.com.grupojcr.rmws.dto.OrcamentoDTO;
+import br.com.grupojcr.rmws.dto.ZMDRMFLUIGDTO;
 import br.com.grupojcr.rmws.util.TreatDate;
 import br.com.grupojcr.rmws.util.TreatNumber;
 import br.com.grupojcr.rmws.util.TreatString;
@@ -1307,5 +1310,215 @@ public class RMDAO extends GenericDAO {
 			}
 		}
 		return orcamentos;
+	}
+	
+	/**
+	 * Método responsável por obter ligação entre fluig e rm
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 04/05/2018
+	 * @return ZMDRMFLUIGDTO
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public ZMDRMFLUIGDTO obterLigacaoRMFluig(Integer idFluig) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = datasource.getConnection();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append(
+					"SELECT RMFLUIG.CODCOLIGADA, RMFLUIG.IDMOV, RMFLUIG.IDCNT, RMFLUIG.IDFLUIG FROM ZMDRMFLUIG RMFLUIG ");
+			sb.append("WHERE RMFLUIG.IDFLUIG = ? ");
+			
+			ps = conn.prepareStatement(sb.toString());
+			ps.setInt(1, idFluig);
+			
+			ResultSet set = ps.executeQuery();
+			
+			while (set.next()) {
+				ZMDRMFLUIGDTO dto = new ZMDRMFLUIGDTO();
+				dto.setIdColigada(set.getInt("CODCOLIGADA"));
+				dto.setIdMovimento(set.getInt("IDMOV"));
+				dto.setIdCnt(set.getInt("IDCNT"));
+				dto.setIdFluig(set.getInt("IDFLUIG"));
+				
+				return dto;
+			}
+		} catch (Exception e) {
+			LOG.error("Erro ao obter ligação RM e Fluig");
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					ps = null;
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					conn = null;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Método responsável por obter contrato para aprovação
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 04/05/2018
+	 * @return AprovacaoContratoDTO
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public AprovacaoContratoDTO obterContrato(Integer idCnt, Integer idColigada) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = datasource.getConnection();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT CNT.IDCNT AS ID, ")
+			.append("COLIGADA.NOME AS COLIGADA, ")
+			.append("FORNECEDOR.NOME AS FORNECEDOR,")
+			.append("CC.CODCCUSTO AS CODIGO_CCUSTO, ")
+			.append("CC.NOME AS NOME_CCUSTO, ")
+			.append("CNT.VALORCONTRATO AS VALOR, ")
+			.append("USUARIO.NOME AS NOME_USUARIO ")
+			.append("FROM TCNT CNT ")
+			.append("LEFT JOIN GCOLIGADA COLIGADA ON (CNT.CODCOLIGADA = COLIGADA.CODCOLIGADA) ")
+			.append("LEFT JOIN FCFO FORNECEDOR ON (CNT.CODCFO = FORNECEDOR.CODCFO) ")
+			.append("LEFT JOIN GCCUSTO CC on (CNT.CODCOLIGADA = CC.CODCOLIGADA AND CNT.CODCCUSTO = CC.CODCCUSTO) ")
+			.append("LEFT JOIN GUSUARIO USUARIO ON (CNT.CODUSUARIO = USUARIO.CODUSUARIO) ")
+			.append("WHERE CNT.CODCOLIGADA = ? ")
+			.append("AND CNT.IDCNT = ? ");
+			
+			ps = conn.prepareStatement(sb.toString());
+			int idx = 1;
+			ps.setInt(idx++, idColigada);
+			ps.setInt(idx++, idCnt);
+			
+			ResultSet set = ps.executeQuery();
+			
+			while (set.next()) {
+				AprovacaoContratoDTO dto = new AprovacaoContratoDTO();
+				dto.setIdCnt(set.getInt("ID"));
+				dto.setNomeColigada(set.getString("COLIGADA"));
+				dto.setNomeFornecedor(set.getString("FORNECEDOR"));
+				dto.setCodigoCentroCusto(set.getString("CODIGO_CCUSTO"));
+				dto.setCentroCusto(set.getString("NOME_CCUSTO"));
+				dto.setValor(set.getBigDecimal("VALOR"));
+				dto.setRequisitante(set.getString("NOME_USUARIO"));
+				
+				return dto;
+			}
+		} catch (Exception e) {
+			LOG.error("Erro ao obter dados do contrato");
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					ps = null;
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					conn = null;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Método responsável por obter ordem de compra para aprovação
+	 * 
+	 * @author Leonan Yglecias Mattos - <mattosl@grupojcr.com.br>
+	 * @since 04/05/2018
+	 * @return AprovacaoOrdemCompraDTO
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public AprovacaoOrdemCompraDTO obterOrdemCompra(Integer idMov, Integer idColigada) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = datasource.getConnection();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT MOV.IDMOV AS ID, ")
+			.append("COLIGADA.NOME AS COLIGADA, ")
+			.append("FORNECEDOR.NOME AS FORNECEDOR,")
+			.append("CC.CODCCUSTO AS CODIGO_CCUSTO, ")
+			.append("CC.NOME AS NOME_CCUSTO, ")
+			.append("MOV.VALORBRUTOORIG AS VALOR, ")
+			.append("USUARIO.NOME AS NOME_USUARIO ")
+			.append("FROM TMOV MOV ")
+			.append("LEFT JOIN GCOLIGADA COLIGADA ON (MOV.CODCOLIGADA = COLIGADA.CODCOLIGADA) ")
+			.append("LEFT JOIN FCFO FORNECEDOR ON (MOV.CODCFO = FORNECEDOR.CODCFO) ")
+			.append("LEFT JOIN GCCUSTO CC on (MOV.CODCOLIGADA = CC.CODCOLIGADA AND MOV.CODCCUSTO = CC.CODCCUSTO) ")
+			.append("LEFT JOIN GUSUARIO USUARIO ON (MOV.CODUSUARIO = USUARIO.CODUSUARIO) ")
+			.append("WHERE MOV.CODCOLIGADA = ? ")
+			.append("AND MOV.IDMOV = ? ");
+			
+			
+			ps = conn.prepareStatement(sb.toString());
+			int idx = 1;
+			ps.setInt(idx++, idColigada);
+			ps.setInt(idx++, idMov);
+			
+			ResultSet set = ps.executeQuery();
+			
+			while (set.next()) {
+				AprovacaoOrdemCompraDTO dto = new AprovacaoOrdemCompraDTO();
+				dto.setIdCnt(set.getInt("ID"));
+				dto.setNomeColigada(set.getString("COLIGADA"));
+				dto.setNomeFornecedor(set.getString("FORNECEDOR"));
+				dto.setCodigoCentroCusto(set.getString("CODIGO_CCUSTO"));
+				dto.setCentroCusto(set.getString("NOME_CCUSTO"));
+				dto.setValor(set.getBigDecimal("VALOR"));
+				dto.setRequisitante(set.getString("NOME_USUARIO"));
+				
+				return dto;
+			}
+		} catch (Exception e) {
+			LOG.error("Erro ao obter dados da ordem de compra");
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					ps = null;
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOG.error(e.getMessage(), e);
+				} finally {
+					conn = null;
+				}
+			}
+		}
+		return null;
 	}
 }
