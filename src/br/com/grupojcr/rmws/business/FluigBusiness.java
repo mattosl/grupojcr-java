@@ -121,20 +121,23 @@ public class FluigBusiness {
 					for(int i = 0; i < solicitacoes.length; i++) {
 						ZMDRMFLUIGDTO rmFluig = rmDAO.obterLigacaoRMFluig(solicitacoes[i].getProcessInstanceId());
 						
-						if(Util.isNotNull(rmFluig.getIdCnt()) && !Util.isNullOrZero(rmFluig.getIdCnt())) {
-							AprovacaoContratoDTO contrato = rmDAO.obterContrato(rmFluig.getIdCnt(), rmFluig.getIdColigada());
-							contrato.setIdFluig(solicitacoes[i].getProcessInstanceId());
-							contrato.setTipo(solicitacoes[i].getStateDescription());
-							contrato.setSequenciaMovimento(solicitacoes[i].getMovementSequence());
-							solicitacao.getContratos().add(contrato);
-							qtdContrato++;
-						} else if(Util.isNotNull(rmFluig.getIdMovimento()) && !Util.isNullOrZero(rmFluig.getIdMovimento())) {
-							AprovacaoOrdemCompraDTO ordemCompra = rmDAO.obterOrdemCompra(rmFluig.getIdMovimento(), rmFluig.getIdColigada());
-							ordemCompra.setIdFluig(solicitacoes[i].getProcessInstanceId());
-							ordemCompra.setTipo(solicitacoes[i].getStateDescription());
-							ordemCompra.setSequenciaMovimento(solicitacoes[i].getMovementSequence());
-							solicitacao.getOrdemCompras().add(ordemCompra);
-							qtdOrdemCompra++;
+						if(rmFluig != null) {
+							
+							if(Util.isNotNull(rmFluig.getIdCnt()) && !Util.isNullOrZero(rmFluig.getIdCnt())) {
+								AprovacaoContratoDTO contrato = rmDAO.obterContrato(rmFluig.getIdCnt(), rmFluig.getIdColigada());
+								contrato.setIdFluig(solicitacoes[i].getProcessInstanceId());
+								contrato.setTipo(solicitacoes[i].getStateDescription());
+								contrato.setSequenciaMovimento(solicitacoes[i].getMovementSequence());
+								solicitacao.getContratos().add(contrato);
+								qtdContrato++;
+							} else if(Util.isNotNull(rmFluig.getIdMovimento()) && !Util.isNullOrZero(rmFluig.getIdMovimento())) {
+								AprovacaoOrdemCompraDTO ordemCompra = rmDAO.obterOrdemCompra(rmFluig.getIdMovimento(), rmFluig.getIdColigada());
+								ordemCompra.setIdFluig(solicitacoes[i].getProcessInstanceId());
+								ordemCompra.setTipo(solicitacoes[i].getStateDescription());
+								ordemCompra.setSequenciaMovimento(solicitacoes[i].getMovementSequence());
+								solicitacao.getOrdemCompras().add(ordemCompra);
+								qtdOrdemCompra++;
+							}
 						}
 					}
 				}
@@ -142,20 +145,16 @@ public class FluigBusiness {
 				solicitacao.setQtdContratos(qtdContrato);
 				solicitacao.setQtdOrdemCompra(qtdOrdemCompra);
 				
-				if(qtdContrato >= 10) {
+				if(qtdContrato > 0) {
 					solicitacao.setClasseCSSContratos("badge-danger");
-				} else if(qtdContrato == 0) {
-					solicitacao.setClasseCSSContratos("");
 				} else {
-					solicitacao.setClasseCSSContratos("badge-warning");
+					solicitacao.setClasseCSSContratos("");
 				}
 				
-				if(qtdOrdemCompra >= 10) {
+				if(qtdOrdemCompra > 0) {
 					solicitacao.setClasseCSSOrdemCompra("badge-danger");
-				} else if(qtdOrdemCompra == 0) {
-					solicitacao.setClasseCSSOrdemCompra("");
 				} else {
-					solicitacao.setClasseCSSOrdemCompra("badge-warning");
+					solicitacao.setClasseCSSOrdemCompra("");
 				}
 				
 				return solicitacao;

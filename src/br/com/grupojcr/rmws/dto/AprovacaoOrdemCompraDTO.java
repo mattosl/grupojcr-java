@@ -1,7 +1,5 @@
 package br.com.grupojcr.rmws.dto;
 
-import java.math.BigDecimal;
-
 public class AprovacaoOrdemCompraDTO {
 	
 	private Integer idFluig;
@@ -11,7 +9,7 @@ public class AprovacaoOrdemCompraDTO {
 	private String nomeFornecedor;
 	private String codigoCentroCusto;
 	private String centroCusto;
-	private BigDecimal valor;
+	private String valor;
 	private String requisitante;
 	private Integer sequenciaMovimento;
 	
@@ -45,10 +43,10 @@ public class AprovacaoOrdemCompraDTO {
 	public void setCentroCusto(String centroCusto) {
 		this.centroCusto = centroCusto;
 	}
-	public BigDecimal getValor() {
+	public String getValor() {
 		return valor;
 	}
-	public void setValor(BigDecimal valor) {
+	public void setValor(String valor) {
 		this.valor = valor;
 	}
 	public String getRequisitante() {

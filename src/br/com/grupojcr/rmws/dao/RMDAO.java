@@ -1416,7 +1416,8 @@ public class RMDAO extends GenericDAO {
 				dto.setNomeFornecedor(set.getString("FORNECEDOR"));
 				dto.setCodigoCentroCusto(set.getString("CODIGO_CCUSTO"));
 				dto.setCentroCusto(set.getString("NOME_CCUSTO"));
-				dto.setValor(set.getBigDecimal("VALOR"));
+				BigDecimal valor = set.getBigDecimal("VALOR");
+				dto.setValor(TreatNumber.formatMoney(valor).toString());
 				dto.setRequisitante(set.getString("NOME_USUARIO"));
 				
 				return dto;
@@ -1492,7 +1493,8 @@ public class RMDAO extends GenericDAO {
 				dto.setNomeFornecedor(set.getString("FORNECEDOR"));
 				dto.setCodigoCentroCusto(set.getString("CODIGO_CCUSTO"));
 				dto.setCentroCusto(set.getString("NOME_CCUSTO"));
-				dto.setValor(set.getBigDecimal("VALOR"));
+				BigDecimal valor = set.getBigDecimal("VALOR");
+				dto.setValor(TreatNumber.formatMoney(valor).toString());
 				dto.setRequisitante(set.getString("NOME_USUARIO"));
 				
 				return dto;
