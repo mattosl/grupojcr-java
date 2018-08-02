@@ -76,9 +76,13 @@ public class RMBusiness {
 					
 					if(TreatString.isNotBlank(naturezaOrcamentaria)) {
 						Boolean possuiNatureza = Boolean.FALSE;
-						for(ItemDTO item : dto.getListaItem()) {
-							if(item.getIdNaturezaOrcamentaria().equals(naturezaOrcamentaria)) {
-								possuiNatureza = Boolean.TRUE;
+						if(Util.isNotNull(dto.getListaItem())) {
+							for(ItemDTO item : dto.getListaItem()) {
+								if(Util.isNotNull(item.getIdNaturezaOrcamentaria())) {
+									if(item.getIdNaturezaOrcamentaria().equals(naturezaOrcamentaria)) {
+										possuiNatureza = Boolean.TRUE;
+									}
+								}
 							}
 						}
 						

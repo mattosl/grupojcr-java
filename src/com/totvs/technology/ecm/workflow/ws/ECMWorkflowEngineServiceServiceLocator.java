@@ -22,7 +22,7 @@ public class ECMWorkflowEngineServiceServiceLocator extends org.apache.axis.clie
     }
 
     // Use to get a proxy class for WorkflowEngineServicePort
-    private java.lang.String WorkflowEngineServicePort_address = "http://10.0.0.63:7180/webdesk/ECMWorkflowEngineService";
+    private java.lang.String WorkflowEngineServicePort_address = "http://10.0.0.62:8180/webdesk/ECMWorkflowEngineService";
 
     public java.lang.String getWorkflowEngineServicePortAddress() {
         return WorkflowEngineServicePort_address;

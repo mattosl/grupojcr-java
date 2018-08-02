@@ -1,5 +1,7 @@
 package br.com.grupojcr.rmws.dto;
 
+import java.math.BigDecimal;
+
 public class OrcamentoDTO {
 
 	private String codigo;

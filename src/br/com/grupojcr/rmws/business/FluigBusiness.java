@@ -17,6 +17,7 @@ import com.totvs.technology.ecm.workflow.ws.ECMWorkflowEngineServiceServiceSoapB
 import br.com.grupojcr.rmws.dao.RMDAO;
 import br.com.grupojcr.rmws.dto.AprovacaoContratoDTO;
 import br.com.grupojcr.rmws.dto.AprovacaoOrdemCompraDTO;
+import br.com.grupojcr.rmws.dto.AprovacaoSolicitacaoCompraDTO;
 import br.com.grupojcr.rmws.dto.SolicitacaoAprovacaoDTO;
 import br.com.grupojcr.rmws.dto.ZMDRMFLUIGDTO;
 import br.com.grupojcr.rmws.util.TreatString;
@@ -114,8 +115,10 @@ public class FluigBusiness {
 				SolicitacaoAprovacaoDTO solicitacao = new SolicitacaoAprovacaoDTO();
 				solicitacao.setContratos(new ArrayList<AprovacaoContratoDTO>());
 				solicitacao.setOrdemCompras(new ArrayList<AprovacaoOrdemCompraDTO>());
+				solicitacao.setSolicitacoes(new ArrayList<AprovacaoSolicitacaoCompraDTO>());
 				Integer qtdContrato = 0;
 				Integer qtdOrdemCompra = 0;
+				Integer qtdSolicitacaoCompra = 0;
 				
 				if(solicitacoes.length > 0) {
 					for(int i = 0; i < solicitacoes.length; i++) {
@@ -125,18 +128,22 @@ public class FluigBusiness {
 							
 							if(Util.isNotNull(rmFluig.getIdCnt()) && !Util.isNullOrZero(rmFluig.getIdCnt())) {
 								AprovacaoContratoDTO contrato = rmDAO.obterContrato(rmFluig.getIdCnt(), rmFluig.getIdColigada());
-								contrato.setIdFluig(solicitacoes[i].getProcessInstanceId());
-								contrato.setTipo(solicitacoes[i].getStateDescription());
-								contrato.setSequenciaMovimento(solicitacoes[i].getMovementSequence());
-								solicitacao.getContratos().add(contrato);
-								qtdContrato++;
+								if(Util.isNotNull(contrato)) {
+									contrato.setIdFluig(solicitacoes[i].getProcessInstanceId());
+									contrato.setTipo(solicitacoes[i].getStateDescription());
+									contrato.setSequenciaMovimento(solicitacoes[i].getMovementSequence());
+									solicitacao.getContratos().add(contrato);
+									qtdContrato++;
+								}
 							} else if(Util.isNotNull(rmFluig.getIdMovimento()) && !Util.isNullOrZero(rmFluig.getIdMovimento())) {
 								AprovacaoOrdemCompraDTO ordemCompra = rmDAO.obterOrdemCompra(rmFluig.getIdMovimento(), rmFluig.getIdColigada());
-								ordemCompra.setIdFluig(solicitacoes[i].getProcessInstanceId());
-								ordemCompra.setTipo(solicitacoes[i].getStateDescription());
-								ordemCompra.setSequenciaMovimento(solicitacoes[i].getMovementSequence());
-								solicitacao.getOrdemCompras().add(ordemCompra);
-								qtdOrdemCompra++;
+								if(Util.isNotNull(ordemCompra)) {
+									ordemCompra.setIdFluig(solicitacoes[i].getProcessInstanceId());
+									ordemCompra.setTipo(solicitacoes[i].getStateDescription());
+									ordemCompra.setSequenciaMovimento(solicitacoes[i].getMovementSequence());
+									solicitacao.getOrdemCompras().add(ordemCompra);
+									qtdOrdemCompra++;
+								}
 							}
 						}
 					}
@@ -144,8 +151,15 @@ public class FluigBusiness {
 				
 				solicitacao.setQtdContratos(qtdContrato);
 				solicitacao.setQtdOrdemCompra(qtdOrdemCompra);
+				solicitacao.setQtdSolicitacaoCompra(qtdSolicitacaoCompra);
 				
 				if(qtdContrato > 0) {
+					solicitacao.setClasseCSSContratos("badge-danger");
+				} else {
+					solicitacao.setClasseCSSContratos("");
+				}
+				
+				if(qtdSolicitacaoCompra > 0) {
 					solicitacao.setClasseCSSContratos("badge-danger");
 				} else {
 					solicitacao.setClasseCSSContratos("");
